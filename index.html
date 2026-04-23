@@ -362,6 +362,19 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);overflo
   .nav-link{padding:5px 9px!important;font-size:11px!important;}
   .nav-cta{padding:5px 10px!important;font-size:11px!important;}
   .nav-divider{display:none!important;}
+  .nav-lang{padding:4px 8px!important;font-size:10px!important;}
+}
+
+/* ── Language toggle button ── */
+.nav-lang{
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:600;letter-spacing:.06em;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);
+  border-radius:999px;padding:5px 11px;cursor:pointer;color:var(--text);
+  transition:background .2s,border-color .2s;gap:5px;white-space:nowrap;
+}
+.nav-lang:hover{background:rgba(255,255,255,.2);}
+.nav-lang .lang-flag{font-size:13px;line-height:1;}
 
   /* Hero adjustments */
   .hero-name{font-size:clamp(2rem,11vw,3.5rem)!important;}
@@ -420,9 +433,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);overflo
   <div id="contactBackdrop" style="position:absolute;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(16px);cursor:pointer;"></div>
   <div style="position:relative;z-index:2;background:#111;border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:40px 36px;width:min(90vw,400px);text-align:center;box-shadow:0 40px 100px rgba(0,0,0,.8);">
     <button id="contactClose" style="position:absolute;top:14px;right:16px;background:rgba(255,255,255,.08);border:none;border-radius:50%;width:30px;height:30px;color:#fff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
-    <p style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.3em;margin-bottom:10px;">Contáctanos</p>
-    <h3 style="font-family:var(--font-display);font-style:italic;font-size:1.6rem;color:var(--text);margin-bottom:8px;line-height:1.2;">¿Hablamos?</h3>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:28px;line-height:1.6;">Elige cómo prefieres contactar con nosotros.</p>
+    <p id="popupLabel" style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.3em;margin-bottom:10px;">Contáctanos</p>
+    <h3 id="popupTitle" style="font-family:var(--font-display);font-style:italic;font-size:1.6rem;color:var(--text);margin-bottom:8px;line-height:1.2;">¿Hablamos?</h3>
+    <p id="popupDesc" style="font-size:13px;color:var(--muted);margin-bottom:28px;line-height:1.6;">Elige cómo prefieres contactar con nosotros.</p>
     <div style="display:flex;flex-direction:column;gap:12px;">
       <a href="mailto:therollinglabstudios@gmail.com" class="cp-btn cp-email-btn">
         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
@@ -438,11 +451,16 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);overflo
 
 <nav id="navbar">
   <div class="nav-pill" id="navPill">
-    <a class="nav-link active" href="#hero">Inicio</a>
-    <a class="nav-link" href="#works">Trabajos</a>
-    <a class="nav-link" href="#nosotros">Nosotros</a>
+    <a class="nav-link active" href="#hero" id="navHome">Inicio</a>
+    <a class="nav-link" href="#works" id="navWorks">Trabajos</a>
+    <a class="nav-link" href="#nosotros" id="navAbout">Nosotros</a>
     <div class="nav-divider"></div>
-    <button class="nav-cta" onclick="openContactPopup()"><span>Contáctanos ↗</span></button>
+    <button class="nav-cta" onclick="openContactPopup()"><span id="navCta">Contáctanos ↗</span></button>
+    <div class="nav-divider"></div>
+    <button class="nav-lang" id="langBtn" onclick="toggleLang()">
+      <span class="lang-flag" id="langFlag">🇬🇧</span>
+      <span id="langTxt">EN</span>
+    </button>
   </div>
 </nav>
 
@@ -455,13 +473,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);overflo
   <div class="hero-overlay"></div>
   <div class="hero-fade"></div>
   <div class="hero-content">
-    <p class="hero-eyebrow blur-in">PRODUCCIÓN AUDIOVISUAL · IA</p>
+    <p class="hero-eyebrow blur-in" id="heroEyebrow">PRODUCCIÓN AUDIOVISUAL · IA</p>
     <h1 class="hero-name name-reveal">TheRollingLab</h1>
-    <p class="hero-role-line blur-in">Contenido <span id="roleWord" class="hero-role-word">Cinematográfico</span> para tu marca.</p>
-    <p class="hero-desc blur-in">Fusionamos filmación profesional con inteligencia artificial para crear Brand Content de alto impacto — sin los costes desorbitados de la producción tradicional.</p>
+    <p class="hero-role-line blur-in">Contenido <span id="roleWord" class="hero-role-word">Cinematográfico</span><span id="heroRoleFor"> para tu marca.</span></p>
+    <p class="hero-desc blur-in" id="heroDesc">Fusionamos filmación profesional con inteligencia artificial para crear Brand Content de alto impacto — sin los costes desorbitados de la producción tradicional.</p>
     <div class="hero-btns blur-in">
-      <button class="btn-solid" onclick="document.getElementById('works').scrollIntoView({behavior:'smooth'})">Ver trabajos</button>
-      <button class="btn-out" onclick="openContactPopup()">Hablemos ↗</button>
+      <button class="btn-solid" id="heroBtn1" onclick="document.getElementById('works').scrollIntoView({behavior:'smooth'})">Ver trabajos</button>
+      <button class="btn-out" id="heroBtn2" onclick="openContactPopup()">Hablemos ↗</button>
     </div>
   </div>
   <div class="scroll-ind" id="scrollInd">
@@ -474,9 +492,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);overflo
   <div class="sec-in">
     <div class="hdr-row reveal">
       <div>
-        <div class="eyebrow-row"><div class="eye-line"></div><span class="eye-txt">Proyectos destacados</span></div>
-        <h2 class="sec-title">Trabajos <em>seleccionados</em></h2>
-        <p class="sec-sub">Producciones reales potenciadas con IA — del concepto al lanzamiento.</p>
+        <div class="eyebrow-row"><div class="eye-line"></div><span class="eye-txt" id="worksEyebrow">Proyectos destacados</span></div>
+        <h2 class="sec-title" id="worksTitle">Trabajos <em>seleccionados</em></h2>
+        <p class="sec-sub" id="worksSub">Producciones reales potenciadas con IA — del concepto al lanzamiento.</p>
       </div>
     </div>
     <div class="bento">
@@ -513,7 +531,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);overflo
           <!-- Flecha derecha -->
           <button id="carNext" onclick="carMove(1)" style="position:absolute;right:calc(50% - 190px - 60px);top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;background:rgba(20,20,20,.9);border:1px solid rgba(255,255,255,.12);color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;z-index:20;backdrop-filter:blur(8px);" onmouseover="this.style.background='rgba(109,40,217,.8)'" onmouseout="this.style.background='rgba(20,20,20,.9)'">›</button>
         </div>
-        <p style="text-align:center;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.2em;margin-top:40px;margin-bottom:0;">Desliza para ver todos los proyectos</p>
+        <p id="carSub" style="text-align:center;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.2em;margin-top:40px;margin-bottom:0;">Desliza para ver todos los proyectos</p>
       </div>
       <!-- FIN CARRUSEL — galería completa abajo -->
       <div class="bento">
@@ -606,30 +624,30 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);overflo
   <div class="sec-in">
     <div class="nos-grid reveal">
       <div>
-        <div class="eyebrow-row"><div class="eye-line"></div><span class="eye-txt">Quiénes somos</span></div>
+        <div class="eyebrow-row"><div class="eye-line"></div><span class="eye-txt" id="nosEyebrow">Quiénes somos</span></div>
         <div class="nos-accent-bar"></div>
-        <p class="nos-big">Somos una <strong>Productora Híbrida</strong> especializada en Brand Content de <em>alto impacto.</em></p>
-        <p class="nos-p">Fusionamos la filmación profesional en el mundo real con la mejora visual potenciada por IA. Esto nos permite crear contenido visual cinematográfico y de alta gama para marcas, artistas y empresas — evitando los enormes costes de la producción tradicional.</p>
-        <p class="nos-p">Utilizamos la tecnología como herramienta creativa para ofrecer presupuestos optimizados sin sacrificar la calidad visual.</p>
-        <p class="nos-quote">Deja de elegir entre calidad y coste.</p>
-        <button class="btn-out" onclick="openContactPopup()" style="font-size:13px;padding:12px 24px">Empecemos juntos ↗</button>
+        <p class="nos-big" id="nosBig">Somos una <strong>Productora Híbrida</strong> especializada en Brand Content de <em>alto impacto.</em></p>
+        <p class="nos-p" id="nosP1">Fusionamos la filmación profesional en el mundo real con la mejora visual potenciada por IA. Esto nos permite crear contenido visual cinematográfico y de alta gama para marcas, artistas y empresas — evitando los enormes costes de la producción tradicional.</p>
+        <p class="nos-p" id="nosP2">Utilizamos la tecnología como herramienta creativa para ofrecer presupuestos optimizados sin sacrificar la calidad visual.</p>
+        <p class="nos-quote" id="nosQuote">Deja de elegir entre calidad y coste.</p>
+        <button class="btn-out" id="nosBtn" onclick="openContactPopup()" style="font-size:13px;padding:12px 24px">Empecemos juntos ↗</button>
       </div>
       <div class="nos-cards stagger">
-        <div class="nos-card nos-card-sq nos-card-lila" style="background:linear-gradient(135deg,#4c1d95,#7c3aed,#a855f7);border:1px solid rgba(168,85,247,.25);border-radius:18px;justify-content:flex-start!important;"><div class="nos-card-title" style="color:#fff;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;margin-bottom:10px;">Filmación profesional</div><p class="nos-card-txt" style="color:rgba(255,255,255,.82);font-size:12px;line-height:1.65;">Producción real en localizaciones con equipo profesional y dirección cinematográfica de primer nivel.</p></div>
-        <div class="nos-card nos-card-sq nos-card-cyan" style="background:linear-gradient(135deg,#0e4f6e,#0891b2,#22d3ee);border:1px solid rgba(34,211,238,.25);border-radius:18px;justify-content:flex-start!important;"><div class="nos-card-title" style="color:#fff;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;margin-bottom:10px;">Potenciado por IA</div><p class="nos-card-txt" style="color:rgba(255,255,255,.82);font-size:12px;line-height:1.65;">Integramos inteligencia artificial en cada fase del proceso creativo para elevar la calidad visual y optimizar tiempos.</p></div>
-        <div class="nos-card nos-card-wide nos-card-lime" style="background:linear-gradient(135deg,#1a4a0a,#16a34a,#84cc16);border:1px solid rgba(132,204,22,.25);border-radius:18px;"><div class="nos-card-title" style="color:#fff;font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;margin-bottom:8px;">Presupuesto optimizado</div><p class="nos-card-txt" style="color:rgba(255,255,255,.82);font-size:13px;line-height:1.65;">Calidad de producción de alto nivel sin los costes del modelo tradicional. Tecnología e inteligencia al servicio de tu marca.</p></div>
+        <div class="nos-card nos-card-sq nos-card-lila" style="background:linear-gradient(135deg,#4c1d95,#7c3aed,#a855f7);border:1px solid rgba(168,85,247,.25);border-radius:18px;justify-content:flex-start!important;"><div class="nos-card-title" id="card1Title" style="color:#fff;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;margin-bottom:10px;">Filmación profesional</div><p class="nos-card-txt" id="card1Txt" style="color:rgba(255,255,255,.82);font-size:12px;line-height:1.65;">Producción real en localizaciones con equipo profesional y dirección cinematográfica de primer nivel.</p></div>
+        <div class="nos-card nos-card-sq nos-card-cyan" style="background:linear-gradient(135deg,#0e4f6e,#0891b2,#22d3ee);border:1px solid rgba(34,211,238,.25);border-radius:18px;justify-content:flex-start!important;"><div class="nos-card-title" id="card2Title" style="color:#fff;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;margin-bottom:10px;">Potenciado por IA</div><p class="nos-card-txt" id="card2Txt" style="color:rgba(255,255,255,.82);font-size:12px;line-height:1.65;">Integramos inteligencia artificial en cada fase del proceso creativo para elevar la calidad visual y optimizar tiempos.</p></div>
+        <div class="nos-card nos-card-wide nos-card-lime" style="background:linear-gradient(135deg,#1a4a0a,#16a34a,#84cc16);border:1px solid rgba(132,204,22,.25);border-radius:18px;"><div class="nos-card-title" id="card3Title" style="color:#fff;font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;margin-bottom:8px;">Presupuesto optimizado</div><p class="nos-card-txt" id="card3Txt" style="color:rgba(255,255,255,.82);font-size:13px;line-height:1.65;">Calidad de producción de alto nivel sin los costes del modelo tradicional. Tecnología e inteligencia al servicio de tu marca.</p></div>
       </div>
     </div>
-    <div class="nos-tagline reveal"><p>"Elevamos la historia de tu marca <span>con inteligencia."</span></p></div>
+    <div class="nos-tagline reveal"><p id="nosTagline">"Elevamos la historia de tu marca <span>con inteligencia."</span></p></div>
   </div>
 </section>
 
 <section id="stats">
   <div class="sec-in">
     <div class="stats-g stagger">
-      <div><div class="stat-n">+10</div><div class="stat-l">Producciones completadas</div></div>
-      <div><div class="stat-n">+13</div><div class="stat-l">Proyectos con IA</div></div>
-      <div><div class="stat-n">100%</div><div class="stat-l">Visión creativa</div></div>
+      <div><div class="stat-n">+10</div><div class="stat-l" id="stat1">Producciones completadas</div></div>
+      <div><div class="stat-n">+13</div><div class="stat-l" id="stat2">Proyectos con IA</div></div>
+      <div><div class="stat-n">100%</div><div class="stat-l" id="stat3">Visión creativa</div></div>
     </div>
   </div>
 </section>
@@ -653,8 +671,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);overflo
     </div>
     <div class="sec-in">
       <div class="fc-center reveal">
-        <p class="fc-lbl">¿Listo para crear algo increíble?</p>
-        <h2 class="fc-big">Trabajemos<br><em>juntos.</em></h2>
+        <p class="fc-lbl" id="ctaLbl">¿Listo para crear algo increíble?</p>
+        <h2 class="fc-big" id="ctaBig">Trabajemos<br><em>juntos.</em></h2>
         <div class="fc-btns">
           <a class="fc-btn fc-email" href="mailto:therollinglabstudios@gmail.com">✉  therollinglabstudios@gmail.com</a>
           <a class="fc-btn fc-ig" href="https://www.instagram.com/therollinglab" target="_blank">
@@ -664,7 +682,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);overflo
         </div>
       </div>
       <div class="ft-bar">
-        <div class="ft-avail"><div class="avail-dot"></div><span>Disponibles para proyectos</span></div>
+        <div class="ft-avail"><div class="avail-dot"></div><span id="ftAvail">Disponibles para proyectos</span></div>
         <span class="ft-copy">© 2026 TheRollingLab</span>
       </div>
     </div>
@@ -672,12 +690,158 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);overflo
 </section>
 
 <script>
+/* ══════════════════════════════════════════
+   i18n — Sistema de traducción ES / EN
+   Detección automática por idioma del navegador.
+   El usuario puede cambiar manualmente con el botón EN/ES.
+══════════════════════════════════════════ */
+const i18n = {
+  es: {
+    navHome:'Inicio', navWorks:'Trabajos', navAbout:'Nosotros',
+    navCta:'Contáctanos ↗', langFlag:'🇬🇧', langTxt:'EN',
+    heroEyebrow:'PRODUCCIÓN AUDIOVISUAL · IA',
+    heroRoleFor:' para tu marca.',
+    heroDesc:'Fusionamos filmación profesional con inteligencia artificial para crear Brand Content de alto impacto — sin los costes desorbitados de la producción tradicional.',
+    heroBtn1:'Ver trabajos', heroBtn2:'Hablemos ↗',
+    roles:['Cinematográfico','Creativo','IA-Powered','Diferenciado'],
+    worksEyebrow:'Proyectos destacados',
+    worksTitle:'Trabajos <em>seleccionados</em>',
+    worksSub:'Producciones reales potenciadas con IA — del concepto al lanzamiento.',
+    carSub:'Desliza para ver todos los proyectos',
+    bcMuted:'🔇 sin sonido', bcPlay:'Reproducir',
+    nosEyebrow:'Quiénes somos',
+    nosBig:'Somos una <strong>Productora Híbrida</strong> especializada en Brand Content de <em>alto impacto.</em>',
+    nosP1:'Fusionamos la filmación profesional en el mundo real con la mejora visual potenciada por IA. Esto nos permite crear contenido visual cinematográfico y de alta gama para marcas, artistas y empresas — evitando los enormes costes de la producción tradicional.',
+    nosP2:'Utilizamos la tecnología como herramienta creativa para ofrecer presupuestos optimizados sin sacrificar la calidad visual.',
+    nosQuote:'Deja de elegir entre calidad y coste.',
+    nosBtn:'Empecemos juntos ↗',
+    card1Title:'Filmación profesional',
+    card1Txt:'Producción real en localizaciones con equipo profesional y dirección cinematográfica de primer nivel.',
+    card2Title:'Potenciado por IA',
+    card2Txt:'Integramos inteligencia artificial en cada fase del proceso creativo para elevar la calidad visual y optimizar tiempos.',
+    card3Title:'Presupuesto optimizado',
+    card3Txt:'Calidad de producción de alto nivel sin los costes del modelo tradicional. Tecnología e inteligencia al servicio de tu marca.',
+    nosTagline:'"Elevamos la historia de tu marca <span>con inteligencia."</span>',
+    stat1:'Producciones completadas', stat2:'Proyectos con IA', stat3:'Visión creativa',
+    marquee:'PRODUCIENDO EL FUTURO',
+    ctaLbl:'¿Listo para crear algo increíble?',
+    ctaBig:'Trabajemos<br><em>juntos.</em>',
+    ftAvail:'Disponibles para proyectos',
+    popupLabel:'Contáctanos', popupTitle:'¿Hablamos?',
+    popupDesc:'Elige cómo prefieres contactar con nosotros.',
+  },
+  en: {
+    navHome:'Home', navWorks:'Work', navAbout:'About',
+    navCta:'Contact us ↗', langFlag:'🇪🇸', langTxt:'ES',
+    heroEyebrow:'AUDIOVISUAL PRODUCTION · AI',
+    heroRoleFor:' for your brand.',
+    heroDesc:'We blend professional filming with artificial intelligence to create high-impact Brand Content — without the sky-high costs of traditional production.',
+    heroBtn1:'See work', heroBtn2:"Let's talk ↗",
+    roles:['Cinematic','Creative','AI-Powered','Distinctive'],
+    worksEyebrow:'Featured projects',
+    worksTitle:'Selected <em>work</em>',
+    worksSub:'Real productions powered by AI — from concept to launch.',
+    carSub:'Swipe to browse all projects',
+    bcMuted:'🔇 no audio', bcPlay:'Play',
+    nosEyebrow:'About us',
+    nosBig:'We are a <strong>Hybrid Studio</strong> specialised in high-impact <em>Brand Content.</em>',
+    nosP1:'We combine real-world professional filming with AI-powered visual enhancement. This lets us deliver cinematic, premium content for brands, artists and businesses — cutting out the enormous costs of traditional production.',
+    nosP2:'We use technology as a creative tool to offer optimised budgets without compromising visual quality.',
+    nosQuote:'Stop choosing between quality and cost.',
+    nosBtn:"Let's start together ↗",
+    card1Title:'Professional filming',
+    card1Txt:'Real productions on location with professional crew and first-class cinematic direction.',
+    card2Title:'AI-powered',
+    card2Txt:'We integrate artificial intelligence at every stage of the creative process to raise visual quality and speed up delivery.',
+    card3Title:'Optimised budget',
+    card3Txt:"High-end production quality without the price tag of the traditional model. Technology and intelligence at your brand's service.",
+    nosTagline:'"We elevate your brand\'s story <span>with intelligence."</span>',
+    stat1:'Productions completed', stat2:'AI-powered projects', stat3:'Creative vision',
+    marquee:'PRODUCING THE FUTURE',
+    ctaLbl:'Ready to create something incredible?',
+    ctaBig:"Let's work<br><em>together.</em>",
+    ftAvail:'Available for projects',
+    popupLabel:'Contact us', popupTitle:'Shall we talk?',
+    popupDesc:"Choose how you'd like to reach us.",
+  }
+};
+
+let currentLang = 'es';
+let rolesArr = i18n.es.roles;
+let roleIdx = 0;
+
+function detectLang(){
+  const saved = localStorage.getItem('trl-lang');
+  if(saved) return saved;
+  const nav = (navigator.language || navigator.userLanguage || 'es').toLowerCase();
+  return nav.startsWith('es') ? 'es' : 'en';
+}
+
+function applyLang(lang){
+  const t = i18n[lang];
+  currentLang = lang;
+  localStorage.setItem('trl-lang', lang);
+  document.documentElement.lang = lang;
+
+  // Elementos con textContent simple
+  ['navHome','navWorks','navAbout','navCta','langTxt',
+   'heroEyebrow','heroRoleFor','heroDesc','heroBtn1','heroBtn2',
+   'worksEyebrow','worksSub','carSub',
+   'nosEyebrow','nosP1','nosP2','nosQuote','nosBtn',
+   'card1Title','card1Txt','card2Title','card2Txt','card3Title','card3Txt',
+   'stat1','stat2','stat3','ctaLbl','ftAvail',
+   'popupLabel','popupTitle','popupDesc'
+  ].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el && t[id] !== undefined) el.textContent = t[id];
+  });
+
+  // Emoji de bandera (textContent para que el emoji se muestre bien)
+  const flagEl = document.getElementById('langFlag');
+  if(flagEl) flagEl.textContent = t.langFlag;
+
+  // Elementos con innerHTML (tienen etiquetas HTML dentro)
+  ['worksTitle','nosBig','nosTagline','ctaBig'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el && t[id]) el.innerHTML = t[id];
+  });
+
+  // Marquee (varios spans iguales)
+  document.querySelectorAll('.mq-txt').forEach(el=>{
+    el.innerHTML = t.marquee + ' <span class="mq-dot">•</span> ';
+  });
+
+  // Cards de bento (texto "sin sonido" y "Reproducir")
+  document.querySelectorAll('.bc-muted').forEach(el=>{ el.textContent = t.bcMuted; });
+  document.querySelectorAll('.bc-pill').forEach(el=>{
+    el.innerHTML = `<div class="bc-play-icon"><svg viewBox="0 0 10 10"><polygon points="2,1 9,5 2,9"/></svg></div>${t.bcPlay}`;
+  });
+
+  // Roles del hero — actualiza el array y la palabra visible
+  rolesArr = t.roles;
+  const rw = document.getElementById('roleWord');
+  if(rw) rw.textContent = rolesArr[roleIdx % rolesArr.length];
+
+  // Título de la pestaña del navegador
+  document.title = lang === 'es'
+    ? 'TheRollingLab — Productora Audiovisual'
+    : 'TheRollingLab — Audiovisual Production Studio';
+}
+
+function toggleLang(){
+  applyLang(currentLang === 'es' ? 'en' : 'es');
+}
 /* ─── Page fade-in ─── */
 window.addEventListener('load',()=>{
   const pf=document.getElementById('pageFade');
   requestAnimationFrame(()=>{
     pf.style.opacity='0';
-    setTimeout(()=>{pf.style.display='none';boot();document.getElementById('scrollInd').classList.add('show');},480);
+    setTimeout(()=>{
+      pf.style.display='none';
+      boot();
+      document.getElementById('scrollInd').classList.add('show');
+      applyLang(detectLang()); // ← detección automática de idioma
+    },480);
   });
 });
 
@@ -692,10 +856,10 @@ document.querySelectorAll('a,button,.bc,.nos-card').forEach(el=>{
 });
 
 /* ─── Roles logic ─── */
-const roles=['Cinematográfico','Creativo','IA-Powered','Diferenciado'];
-let ri=0;const rw=document.getElementById('roleWord');
+// Roles — usa rolesArr que applyLang() actualiza al cambiar idioma
+const rw=document.getElementById('roleWord');
 rw.style.transition='opacity .25s,transform .25s';
-setInterval(()=>{rw.style.opacity='0';rw.style.transform='translateY(8px)';setTimeout(()=>{ri=(ri+1)%roles.length;rw.textContent=roles[ri];rw.style.opacity='1';rw.style.transform='none';},240);},2200);
+setInterval(()=>{rw.style.opacity='0';rw.style.transform='translateY(8px)';setTimeout(()=>{roleIdx=(roleIdx+1)%rolesArr.length;rw.textContent=rolesArr[roleIdx];rw.style.opacity='1';rw.style.transform='none';},240);},2200);
 
 /* ─── NAVBAR: degradado lila → cambia con scroll ─── */
 const pill=document.getElementById('navPill');
